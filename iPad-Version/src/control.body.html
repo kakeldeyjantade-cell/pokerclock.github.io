@@ -1,0 +1,309 @@
+
+  <div class="top">
+    <div class="offline" id="offlineTxt">Verbinde mit dem iPad …</div>
+    <div class="wrap">
+      <div class="brand"><span id="hTitle">Pokerclock</span><small id="hSub">Steuerung</small></div>
+      <div class="mini">
+        <div style="text-align:right">
+          <div class="pill" id="mPill" style="font-size:11px;padding:2px 8px">LEVEL 1</div>
+          <div class="muted" id="mBlinds" style="font-weight:700;color:#fff;font-size:13px">100 / 300</div>
+        </div>
+        <div class="mini-time" id="mTime">20:00</div>
+        <button class="primary" id="mPlay" aria-label="Start/Pause">▶</button>
+      </div>
+      <div class="conn bad" id="conn"></div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <!-- ================= LIVE ================= -->
+    <section class="tab on" id="tab-live">
+      <div class="card hero">
+        <div class="status" id="lStatus"><i></i><span>Pausiert</span></div>
+        <div class="pill" id="lPill">LEVEL 1</div>
+        <div class="bigtime" id="lTime">20:00</div>
+        <div class="blinds" id="lBlinds">100 / 300</div>
+        <div class="ante" id="lAnte"></div>
+        <div class="next" id="lNext"><b>Nächstes Level:</b> –</div>
+        <div class="progress" id="lProg"></div>
+      </div>
+      <button class="primary" id="bPlay">▶ Start</button>
+      <div class="grid g4 btnrow">
+        <button data-act="prev">⏮<small>Level zurück</small></button>
+        <button data-adj="-60">−1<small>Minute</small></button>
+        <button data-adj="60">+1<small>Minute</small></button>
+        <button data-act="next">⏭<small>Level vor</small></button>
+      </div>
+      <div class="grid g3 btnrow">
+        <button data-adj="-10">−10<small>Sekunden</small></button>
+        <button data-act="restartLevel" data-confirm="Level-Zeit neu starten?">↺<small>Level neu</small></button>
+        <button data-adj="10">+10<small>Sekunden</small></button>
+      </div>
+
+      <div class="card">
+        <h2>Spieler</h2>
+        <div class="players-big"><span id="pRem">0</span> / <span id="pEnt">0</span><small>übrig / Teilnehmer</small></div>
+        <div class="grid g2 bigbtns">
+          <button class="danger" id="bBust">− Spieler raus</button>
+          <button class="primary" data-act="newPlayer">+ Neuer Spieler</button>
+        </div>
+        <button class="ghost" id="bUndoBust" style="width:100%;margin-top:8px;min-height:40px;font-size:14px">↶ Letzten Bustout rückgängig</button>
+        <div style="margin-top:10px">
+          <div class="stepper"><span>Übrig</span><button data-pl="remaining" data-d="-1">−</button><b id="sRem">0</b><button data-pl="remaining" data-d="1">+</button></div>
+          <div class="stepper"><span>Teilnehmer (Entries)</span><button data-pl="entries" data-d="-1">−</button><b id="sEnt">0</b><button data-pl="entries" data-d="1">+</button></div>
+          <div class="stepper" data-show="rebuys"><span>Rebuys</span><button data-pl="rebuys" data-d="-1">−</button><b id="sReb">0</b><button data-pl="rebuys" data-d="1">+</button></div>
+          <div class="stepper" data-show="addons"><span>Add-ons</span><button data-pl="addons" data-d="-1">−</button><b id="sAdd">0</b><button data-pl="addons" data-d="1">+</button></div>
+          <div class="kv"><span>Durchschnitt</span><b id="pAvg">–</b></div>
+          <div class="kv"><span>Gesamtchips</span><b id="pChips">0</b></div>
+          <div class="kv" data-show="pool"><span>Preisgeld</span><b id="pPool">0 €</b></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Hinweis auf der Anzeige</h2>
+        <textarea data-bind="display.message" rows="2" placeholder="z. B. Final Table! oder Letzte Hand vor der Pause"></textarea>
+        <div class="chips" id="msgChips">
+          <button data-msg="Letzte Hand vor der Pause!">Letzte Hand</button>
+          <button data-msg="FINAL TABLE">Final Table</button>
+          <button data-msg="Bitte Platz nehmen – es geht weiter!">Platz nehmen</button>
+          <button data-msg="Chip Race">Chip Race</button>
+          <button data-msg="Rebuy-Phase beendet">Rebuys zu</button>
+          <button data-msg="Tische werden zusammengelegt">Tische zusammen</button>
+          <button data-msg="HEADS UP">Heads Up</button>
+        </div>
+        <label class="sw" style="margin-top:8px;border-top:1px solid var(--line)"><span>Hinweis anzeigen</span><input type="checkbox" data-bind="display.showMessage"><i></i></label>
+      </div>
+      <div class="card">
+        <h2>Zeit genau setzen</h2>
+        <div class="row">
+          <input type="number" inputmode="numeric" id="setMin" placeholder="Min" min="0">
+          <span class="no-grow" style="font-weight:800">:</span>
+          <input type="number" inputmode="numeric" id="setSec" placeholder="Sek" min="0" max="59">
+          <button class="primary no-grow" id="bSetTime" style="width:96px">Setzen</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= BLINDS ================= -->
+    <section class="tab" id="tab-blinds">
+      <div class="card">
+        <h2>Blindstruktur</h2>
+        <div class="sum" id="bSum"></div>
+        <div class="lvl-head"><span>#</span><span>Small</span><span>Big</span><span>Ante</span><span>Min</span><span></span></div>
+        <div id="lvlList"></div>
+        <div class="grid g2" style="margin-top:8px">
+          <button class="primary" id="addLevel">+ Level</button>
+          <button class="warnbtn" id="addBreak">+ Pause</button>
+        </div>
+        <p class="muted" style="margin:10px 2px 0">Änderungen gelten sofort – auch für das laufende Level. Über <b>⋯</b> kannst du Level verschieben, einfügen, löschen oder direkt hinspringen.</p>
+      </div>
+      <div class="card">
+        <h2>Werkzeuge</h2>
+        <div class="tool" style="border-top:0"><span>Alle Level-Dauern (Min)</span><input type="number" inputmode="decimal" id="tLvlMin" value="20"><button id="tLvlApply">OK</button></div>
+        <div class="tool"><span>Alle Pausen-Dauern (Min)</span><input type="number" inputmode="decimal" id="tBrkMin" value="10"><button id="tBrkApply">OK</button></div>
+        <div class="tool"><span>Ante = Big Blind ab Level</span><input type="number" inputmode="numeric" id="tAnteFrom" value="5"><button id="tAnteApply">OK</button></div>
+        <div class="grid g2" style="margin-top:8px">
+          <button class="ghost" id="tAnteNone">Antes entfernen</button>
+          <button class="ghost" id="tDefault">Standard laden</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TURNIER ================= -->
+    <section class="tab" id="tab-turnier">
+      <div class="card">
+        <h2>Turnier</h2>
+        <label class="f"><span>Titel</span><input type="text" data-bind="tournament.title"></label>
+        <label class="f"><span>Untertitel (zwischen den Sternen – leer = ausblenden)</span><input type="text" data-bind="tournament.subtitle"></label>
+        <label class="f"><span>Turnierart (Kasten – leer = ausblenden)</span><input type="text" data-bind="tournament.type"></label>
+      </div>
+      <div class="card">
+        <h2>Chips &amp; Spieler</h2>
+        <label class="f"><span>Startstack</span><input type="number" inputmode="numeric" data-bind="tournament.startStack"></label>
+        <div class="row">
+          <label class="f"><span>Teilnehmer</span><input type="number" inputmode="numeric" data-bind="tournament.entries"></label>
+          <label class="f"><span>Übrig</span><input type="number" inputmode="numeric" data-bind="tournament.remaining"></label>
+        </div>
+        <label class="f"><span>Chips-Korrektur (+/−, z. B. Bonus-Chips)</span><input type="number" inputmode="numeric" data-bind="tournament.extraChips"></label>
+        <p class="muted" style="margin:8px 2px 0">Gesamtchips = Teilnehmer × Startstack (+ Rebuys/Add-ons + Korrektur). Durchschnitt = Gesamtchips ÷ übrige Spieler.</p>
+      </div>
+      <div class="card">
+        <h2>Rebuys &amp; Add-ons</h2>
+        <label class="sw"><span>Rebuys erlaubt</span><input type="checkbox" data-bind="tournament.rebuysEnabled"><i></i></label>
+        <div class="row" data-show="rebuys">
+          <label class="f"><span>Chips je Rebuy</span><input type="number" inputmode="numeric" data-bind="tournament.rebuyChips"></label>
+          <label class="f"><span>Preis je Rebuy</span><input type="number" inputmode="decimal" data-bind="tournament.rebuyPrice"></label>
+        </div>
+        <label class="sw" style="margin-top:6px"><span>Add-ons erlaubt</span><input type="checkbox" data-bind="tournament.addonsEnabled"><i></i></label>
+        <div class="row" data-show="addons">
+          <label class="f"><span>Chips je Add-on</span><input type="number" inputmode="numeric" data-bind="tournament.addonChips"></label>
+          <label class="f"><span>Preis je Add-on</span><input type="number" inputmode="decimal" data-bind="tournament.addonPrice"></label>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Preisgeld</h2>
+        <div class="row">
+          <label class="f"><span>Buy-in</span><input type="number" inputmode="decimal" data-bind="tournament.buyIn"></label>
+          <label class="f" style="flex:.5"><span>Währung</span><input type="text" data-bind="tournament.currency"></label>
+        </div>
+        <p class="muted" style="margin:8px 2px 0">Preisgeld = Teilnehmer × Buy-in (+ Rebuys/Add-ons). In der Seitenleiste einblenden unter „Anzeige“.</p>
+      </div>
+      <div class="card">
+        <h2>Zugriff</h2>
+        <p class="muted" id="accessTxt" style="margin:0 2px 8px">Steuern kann nur dein eigenes claude.ai-Konto. Wenn du den Link teilst, können andere höchstens zuschauen.</p>
+        <div class="grid">
+          <button class="ghost" id="bCode" hidden>Mit anderem iPad verbinden (Code) …</button>
+          <button class="ghost" id="bRole">Dieses Handy anders nutzen …</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Turnierablauf</h2>
+        <div class="muted" id="lifeState" style="margin:0 2px 10px"></div>
+        <div class="grid">
+          <button class="warnbtn" id="bFinish">🏁 Turnier beenden</button>
+          <button class="primary" id="bNewTour">Neues Turnier vorbereiten</button>
+          <button class="ghost" id="bResetClock">Uhr zurücksetzen (Level 1, gestoppt)</button>
+          <button class="danger" id="bResetAll">Alles auf Standard zurücksetzen</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ANZEIGE ================= -->
+    <section class="tab" id="tab-anzeige">
+      <div class="card">
+        <h2>Farbschema</h2>
+        <div class="swatches">
+          <label><input type="radio" name="theme" value="blau" data-bind="display.theme"><span style="background:linear-gradient(135deg,#0a3fd6,#061a5e)">Blau</span></label>
+          <label><input type="radio" name="theme" value="gruen" data-bind="display.theme"><span style="background:linear-gradient(135deg,#13924a,#063f20)">Grün</span></label>
+          <label><input type="radio" name="theme" value="rot" data-bind="display.theme"><span style="background:linear-gradient(135deg,#c4142f,#520614)">Rot</span></label>
+          <label><input type="radio" name="theme" value="lila" data-bind="display.theme"><span style="background:linear-gradient(135deg,#6531e0,#250e60)">Lila</span></label>
+          <label><input type="radio" name="theme" value="petrol" data-bind="display.theme"><span style="background:linear-gradient(135deg,#0b95a6,#033e46)">Petrol</span></label>
+          <label><input type="radio" name="theme" value="schwarz" data-bind="display.theme"><span style="background:linear-gradient(135deg,#34343a,#060607);color:#e6b85c">Schwarz-Gold</span></label>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Seitenleiste</h2>
+        <label class="sw"><span>Seitenleiste anzeigen</span><input type="checkbox" data-bind="display.showSidebar"><i></i></label>
+        <label class="sw"><span>Spieler</span><input type="checkbox" data-bind="display.sidebar.players"><i></i></label>
+        <label class="sw"><span>Durchschnitt</span><input type="checkbox" data-bind="display.sidebar.average"><i></i></label>
+        <label class="sw"><span>Gesamtchips</span><input type="checkbox" data-bind="display.sidebar.chips"><i></i></label>
+        <label class="sw"><span>Nächste Pause</span><input type="checkbox" data-bind="display.sidebar.nextBreak"><i></i></label>
+        <label class="sw"><span>Preisgeld</span><input type="checkbox" data-bind="display.sidebar.prizepool"><i></i></label>
+        <label class="sw"><span>Rebuys / Add-ons</span><input type="checkbox" data-bind="display.sidebar.rebuys"><i></i></label>
+        <label class="sw"><span>Spielzeit</span><input type="checkbox" data-bind="display.sidebar.elapsed"><i></i></label>
+        <label class="sw"><span>Uhrzeit</span><input type="checkbox" data-bind="display.sidebar.clock"><i></i></label>
+      </div>
+      <div class="card">
+        <h2>Darstellung</h2>
+        <label class="f" style="margin-top:0"><span>„Nächste Pause“ zeigen als</span>
+          <div class="seg">
+            <label><input type="radio" name="nbm" value="countdown" data-bind="display.nextBreakMode"><span>Countdown</span></label>
+            <label><input type="radio" name="nbm" value="time" data-bind="display.nextBreakMode"><span>Uhrzeit</span></label>
+          </div>
+        </label>
+        <label class="f"><span>Zahlenformat</span>
+          <div class="seg">
+            <label><input type="radio" name="nf" value="full" data-bind="display.numberFormat"><span>10.000</span></label>
+            <label><input type="radio" name="nf" value="short" data-bind="display.numberFormat"><span>10K</span></label>
+          </div>
+        </label>
+        <label class="f"><span>Ante-Bezeichnung</span><input type="text" data-bind="display.anteLabel"></label>
+        <label class="f"><span>Text in der Pause</span><input type="text" data-bind="display.breakText"></label>
+        <div style="margin-top:8px">
+          <label class="sw"><span>Timer letzte Minute orange<small>Warnfarbe kurz vor Levelende</small></span><input type="checkbox" data-bind="display.warnLastMinute"><i></i></label>
+          <label class="sw"><span>Pik-Symbol im Hintergrund</span><input type="checkbox" data-bind="display.showSpade"><i></i></label>
+          <label class="sw"><span>Status oben („Ton aktiv“, „Verbunden“)</span><input type="checkbox" data-bind="display.showStatus"><i></i></label>
+          <label class="sw"><span>QR-Code zum Verbinden zeigen<small>z. B. für ein zweites Handy</small></span><input type="checkbox" data-bind="display.showQr"><i></i></label>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Töne (kommen aus dem iPad)</h2>
+        <label class="sw"><span>Ton insgesamt an<small>Hauptschalter für Töne und Ansagen</small></span><input type="checkbox" data-bind="sound.enabled"><i></i></label>
+        <label class="f" style="margin:4px 0 6px"><span>Lautstärke der Töne: <b id="volVal">80</b> %</span><input type="range" min="0" max="100" step="5" data-bind="sound.volume"></label>
+        <label class="sw"><span>Glocke bei Levelwechsel und Pause</span><input type="checkbox" data-bind="sound.chimes"><i></i></label>
+        <label class="sw"><span>Warnton vor Levelende</span><input type="checkbox" data-bind="sound.warning"><i></i></label>
+        <label class="f" style="margin-top:0"><span>Vorwarnung (Ton und Ansage): Sekunden vor Levelende</span><input type="number" inputmode="numeric" data-bind="sound.warningSeconds"></label>
+        <label class="sw"><span>Ticks in den letzten 5 Sekunden</span><input type="checkbox" data-bind="sound.countdown"><i></i></label>
+        <button class="primary" id="bTest" style="width:100%;margin-top:8px">🔔 Test-Ton auf dem iPad abspielen</button>
+        <p class="muted" style="margin:8px 2px 0">Wichtig: Einmal auf die Anzeige am iPad tippen, sonst blockiert der Browser den Ton.</p>
+      </div>
+
+      <div class="card" id="voiceCard">
+        <h2>Sprachansagen – Stimme</h2>
+        <label class="sw"><span>Sprachansagen an<small>Hauptschalter für alle Ansagen</small></span><input type="checkbox" data-bind="sound.voice"><i></i></label>
+        <label class="f" id="engineRow"><span>Sprecherin</span>
+          <select id="engineSel" data-bind="sound.voiceEngine">
+            <option value="eleven">Liberty X (englisch)</option>
+            <option value="browser">iPad-Stimme (deutsch)</option>
+          </select></label>
+        <p class="muted" id="engineInfo" style="margin:6px 2px 0"></p>
+        <div id="browserVoice">
+        <label class="f"><span>Stimme (vom iPad)</span><select id="voiceSel"></select></label>
+        <div class="chkrow">
+          <label class="chk"><input type="checkbox" id="vFemale" checked><span>nur Frauenstimmen</span></label>
+          <label class="chk"><input type="checkbox" id="vAll"><span>alle Sprachen</span></label>
+        </div>
+        <div class="muted" id="voiceInfo" style="margin:6px 2px 0"></div>
+        </div>
+        <button class="primary" id="bVoiceTest" style="width:100%;margin-top:10px">▶ Hörprobe dieser Stimme</button>
+        <label class="f"><span>Sprechtempo: <b id="rateVal">100</b> %</span><input type="range" min="50" max="150" step="5" data-bind="sound.voiceRate"></label>
+        <label class="f"><span>Lautstärke der Stimme: <b id="vvolVal">100</b> %</span><input type="range" min="0" max="100" step="5" data-bind="sound.voiceVolume"></label>
+        <label class="f"><span>Countdown-Ansage bei … Sekunden</span><input type="number" inputmode="numeric" data-bind="sound.countdownSeconds"></label>
+        <details class="tip"><summary>Tipp: natürlichere Stimme auf dem iPad</summary>
+          <p>Auf dem iPad unter <b>Einstellungen → Bedienungshilfen → Gesprochene Inhalte → Stimmen → Deutsch</b> z. B. „Anna“ oder „Helena“ in <b>erweiterter</b> oder <b>Premium</b>-Qualität laden. Danach die Pokerclock auf dem iPad neu öffnen – die Stimme erscheint hier in der Liste.</p>
+          <p>Stimmen mit „braucht Internet“ funktionieren nur online.</p>
+        </details>
+      </div>
+
+      <div class="card" id="clipCard">
+        <h2>Liberty X – einzelne Bausteine</h2>
+        <p class="muted" style="margin:0 2px 10px">Klingt ein Baustein nicht gut, schalte ihn hier ab. <b>▶</b> spielt ihn auf dem iPad. Abgeschaltete Sätze werden einfach weggelassen. Fehlt eine Zahl oder Zeitangabe, spricht die iPad-Stimme diese eine Ansage auf Englisch.</p>
+        <details class="clipgrp" data-grp="phr"><summary>Sätze <span class="cnt"></span></summary><div class="cliplist"></div></details>
+        <details class="clipgrp" data-grp="dur"><summary>Zeitangaben <span class="cnt"></span></summary><div class="cliplist"></div></details>
+        <details class="clipgrp" data-grp="num"><summary>Zahlen <span class="cnt"></span></summary><div class="cliplist"></div></details>
+        <button class="ghost" id="bClipReset" style="width:100%;margin-top:10px">Alle Bausteine wieder einschalten</button>
+      </div>
+      <div class="card">
+        <h2>Welche Ansagen?</h2>
+        <p class="muted" style="margin:0 2px 10px">Jede Ansage einzeln an- oder abschalten. Den Text kannst du ändern; <b>▶</b> spielt die Ansage mit den aktuellen Werten auf dem iPad ab.</p>
+        <div id="annList"></div>
+        <details class="tip"><summary>Platzhalter für die Texte</summary><div id="phList"></div></details>
+        <button class="ghost" id="bAnnReset" style="width:100%;margin-top:10px">Alle Ansagetexte auf Standard</button>
+      </div>
+    </section>
+    <!-- ================= HISTORIE (nur Handy) ================= -->
+    <section class="tab" id="tab-historie">
+      <div id="histArchive">
+        <div class="card">
+          <h2>Turnierarchiv</h2>
+          <p class="muted" style="margin:0 2px 10px">Jedes Turnier wird ab dem Start automatisch aufgezeichnet. Die Historie gibt es nur hier in der Steuerung – auf der Anzeige erscheint sie nie.</p>
+          <div id="histList"><div class="muted">Lade …</div></div>
+        </div>
+      </div>
+      <div id="histDetail" hidden>
+        <button class="ghost backbtn" id="histBack">‹ Zurück zum Archiv</button>
+        <div class="card" id="hdHead"></div>
+        <div class="seg" id="hdSeg">
+          <label><input type="radio" name="hdv" value="summary" checked><span>Übersicht</span></label>
+          <label><input type="radio" name="hdv" value="timeline"><span>Verlauf</span></label>
+          <label><input type="radio" name="hdv" value="places"><span>Plätze</span></label>
+          <label><input type="radio" name="hdv" value="pool"><span>Preispool</span></label>
+        </div>
+        <div id="hdBody"></div>
+      </div>
+    </section>
+  </div>
+
+  <nav class="tabs"><div class="in">
+    <button data-tab="live" class="on"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg>Live</button>
+    <button data-tab="blinds"><svg viewBox="0 0 24 24"><path d="M12 3 2 8l10 5 10-5-10-5zM2 13l10 5 10-5M2 18l10 5 10-5" transform="translate(0 -1.5)"/></svg>Blinds</button>
+    <button data-tab="turnier"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4zM7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3"/></svg>Turnier</button>
+    <button data-tab="anzeige"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Anzeige</button>
+    <button data-tab="historie"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2"/></svg>Historie</button>
+  </div></nav>
+  <div class="snack" id="snack"><span id="snackTxt"></span><button id="snackBtn">Name eintragen</button></div>
+
+  <div class="sheet-bg" id="sheetBg"><div class="sheet" id="sheet"></div></div>
+  <div class="toast" id="toast"></div>
+
